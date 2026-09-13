@@ -1,7 +1,12 @@
 import dotenv from "dotenv";
+import dns from "dns";
 import mongoose from "mongoose";
 
 dotenv.config();
+
+// Some networks (like school/cafe wifi) have a DNS server that cannot resolve
+// MongoDB Atlas SRV records, so we use Google's public DNS instead.
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 const connectDB = async () => {
   try {

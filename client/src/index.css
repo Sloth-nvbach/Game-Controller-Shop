@@ -12,8 +12,28 @@ body {
 }
 
 .app {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
+}
+
+/* Thanh lọc phía trên danh sách sản phẩm */
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.filter-bar .input-group {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+/* Lưới hiển thị các thẻ sản phẩm */
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 h1 {

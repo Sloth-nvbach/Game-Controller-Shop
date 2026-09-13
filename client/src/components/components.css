@@ -1,0 +1,120 @@
+/* ===== CSS cho các component đa dụng ===== */
+
+/* --- Button --- */
+.btn {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Màu sắc của nút */
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  color: #222;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: #d1d5db;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: #fff;
+}
+.btn-danger:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+/* Kích thước của nút */
+.btn-small {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+}
+.btn-medium {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+.btn-large {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+}
+
+/* --- Input và Dropdown (dùng chung kiểu) --- */
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #fff;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.input-error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/* --- Card --- */
+.card {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 260px;
+}
+
+.card-image {
+  width: 100%;
+  display: block;
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.card-brand {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-price {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
