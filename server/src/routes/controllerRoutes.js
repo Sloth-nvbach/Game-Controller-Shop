@@ -6,14 +6,25 @@ import {
   updateController,
   deleteController,
 } from "../controllers/controllerController.js";
+import { protect, adminOnly } from "../middleware/authMiddleware.js";
+import { 
+  validateCreateController, 
+  validateUpdateController, 
+  validateObjectId,
+  validatePagination 
+} from "../middleware/validation.js";
 
 const router = express.Router();
 
-router.route("/").get(getControllers).post(createController);
+router
+  .route("/")
+  .get(validatePagination, getControllers)
+  .post(protect, adminOnly, validateCreateController, createController);
+
 router
   .route("/:id")
-  .get(getControllerById)
-  .put(updateController)
-  .delete(deleteController);
+  .get(validateObjectId, getControllerById)
+  .put(protect, adminOnly, validateUpdateController, updateController)
+  .delete(protect, adminOnly, validateObjectId, deleteController);
 
 export default router;

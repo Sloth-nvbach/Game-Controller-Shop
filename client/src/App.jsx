@@ -1,87 +1,87 @@
-import { useEffect, useState } from "react";
-import { getControllers } from "./services/controllerService.js";
-import Button from "./components/Button.jsx";
-import Input from "./components/Input.jsx";
-import Dropdown from "./components/Dropdown.jsx";
-import Card from "./components/Card.jsx";
-import "./components/components.css";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Header from "./components/Header.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import ProductDetailPage from "./pages/ProductDetailPage.jsx";
+import CartPage from "./pages/CartPage.jsx";
+import CheckoutPage from "./pages/CheckoutPage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
+import AdminPage from "./pages/AdminPage.jsx";
+import MyOrdersPage from "./pages/MyOrdersPage.jsx";
+import OrderDetailPage from "./pages/OrderDetailPage.jsx";
+import { useAuth } from "./context/AuthContext.jsx";
+import "./App.css";
 
-const brandOptions = [
-  { value: "Sony", label: "Sony" },
-  { value: "Microsoft", label: "Microsoft" },
-  { value: "Nintendo", label: "Nintendo" },
-];
+function ProtectedRoute({ children, requireAdmin = false }) {
+  const { isAuthenticated, isAdmin, loading } = useAuth();
 
-function App() {
-  const [controllers, setControllers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchText, setSearchText] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState("");
-
-  useEffect(() => {
-    getControllers()
-      .then((data) => setControllers(data))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
-
-  // Lọc danh sách theo ô tìm kiếm và hãng đã chọn
-  const filteredControllers = controllers.filter(function (c) {
-    const matchName = c.name.toLowerCase().includes(searchText.toLowerCase());
-    const matchBrand = selectedBrand === "" || c.brand === selectedBrand;
-    return matchName && matchBrand;
-  });
-
-  // Hàm mẫu xử lý khi bấm "Thêm vào giỏ" (làm giỏ hàng ở bước sau)
-  function handleAddToCart(controller) {
-    alert("Đã thêm: " + controller.name);
+  if (loading) {
+    return <div className="loading-screen">Đang tải...</div>;
   }
 
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (requireAdmin && !isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+}
+
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/product/:id" element={<ProductDetailPage />} />
+      <Route path="/cart" element={<CartPage />} />
+      <Route
+        path="/checkout"
+        element={
+          <ProtectedRoute>
+            <CheckoutPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/orders"
+        element={
+          <ProtectedRoute>
+            <MyOrdersPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/orders/:id"
+        element={
+          <ProtectedRoute>
+            <OrderDetailPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute requireAdmin>
+            <AdminPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
+
+function App() {
   return (
     <div className="app">
-      <h1>Game Controller Shop</h1>
-
-      <div className="filter-bar">
-        <Input
-          placeholder="Tìm tay cầm..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-        <Dropdown
-          placeholder="Tất cả các hãng"
-          options={brandOptions}
-          value={selectedBrand}
-          onChange={(e) => setSelectedBrand(e.target.value)}
-        />
-        <Button
-          variant="secondary"
-          onClick={() => {
-            setSearchText("");
-            setSelectedBrand("");
-          }}
-        >
-          Xóa lọc
-        </Button>
-      </div>
-
-      {loading && <p>Loading...</p>}
-
-      {!loading && filteredControllers.length === 0 && (
-        <p>Không tìm thấy tay cầm nào.</p>
-      )}
-
-      <div className="card-grid">
-        {filteredControllers.map((c) => (
-          <Card
-            key={c._id}
-            name={c.name}
-            brand={c.brand}
-            price={c.price}
-            image={c.image}
-            onAddToCart={() => handleAddToCart(c)}
-          />
-        ))}
-      </div>
+      <Header />
+      <main className="main-content">
+        <AppRoutes />
+      </main>
     </div>
   );
 }

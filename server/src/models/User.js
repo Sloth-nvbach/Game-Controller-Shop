@@ -1,6 +1,6 @@
 // User model - represents a customer of the shop
-// (kept simple for now, can be used for login/register later)
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
@@ -20,10 +20,12 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // Plain password for now (a real project should hash this!)
+    // Hashed password
     password: {
       type: String,
       required: true,
+      minlength: 6,
+      select: false,
     },
 
     // True if the user is a shop admin
@@ -34,6 +36,21 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Hash password before saving
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+// Compare password method
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
 
 const User = mongoose.model("User", userSchema);
 

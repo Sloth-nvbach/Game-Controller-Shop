@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Button from "./Button.jsx";
 
 // Card dùng để hiển thị một sản phẩm (tay cầm) trong cửa hàng
@@ -8,8 +9,10 @@ function Card(props) {
     return "$" + Number(price).toFixed(2);
   }
 
-  return (
-    <div className="card">
+  const isOutOfStock = props.stock !== undefined && props.stock <= 0;
+
+  const cardContent = (
+    <>
       {/* Nếu không có ảnh thì dùng ảnh mặc định */}
       <img
         className="card-image"
@@ -22,12 +25,33 @@ function Card(props) {
         <p className="card-brand">{props.brand}</p>
         <p className="card-price">{formatPrice(props.price)}</p>
 
-        <Button variant="primary" size="small" onClick={props.onAddToCart}>
-          Thêm vào giỏ
+        {props.stock !== undefined && (
+          <p className={`card-stock ${isOutOfStock ? "out-of-stock" : "in-stock"}`}>
+            {isOutOfStock ? "Hết hàng" : `Còn ${props.stock} sản phẩm`}
+          </p>
+        )}
+
+        <Button
+          variant="primary"
+          size="small"
+          onClick={props.onAddToCart}
+          disabled={isOutOfStock}
+        >
+          {isOutOfStock ? "Hết hàng" : "Thêm vào giỏ"}
         </Button>
       </div>
-    </div>
+    </>
   );
+
+  if (props.link) {
+    return (
+      <Link to={props.link} className="card-link">
+        <div className="card">{cardContent}</div>
+      </Link>
+    );
+  }
+
+  return <div className="card">{cardContent}</div>;
 }
 
 export default Card;
