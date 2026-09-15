@@ -30,7 +30,7 @@ function MyOrdersPage() {
         throw new Error(data.message || "Không thể tải đơn hàng.");
       }
 
-      setOrders(data);
+      setOrders(data.orders || []);
     } catch (err) {
       setError(err.message);
     } finally {
