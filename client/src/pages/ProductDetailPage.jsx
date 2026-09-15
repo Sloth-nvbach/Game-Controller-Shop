@@ -3,6 +3,8 @@ import { useParams, Link } from "react-router-dom";
 import { getControllerById } from "../services/controllerService.js";
 import Button from "../components/Button.jsx";
 import { useCart } from "../context/CartContext.jsx";
+import { Loading, ErrorMessage } from "../components/Loader.jsx";
+import { Price } from "../components/Price.jsx";
 import "./ProductDetailPage.css";
 
 function ProductDetailPage() {
@@ -25,29 +27,22 @@ function ProductDetailPage() {
   }, [id]);
 
   if (loading) {
-    return <div className="loading">Đang tải...</div>;
+    return <Loading text="Đang tải sản phẩm..." />;
   }
 
   if (error || !product) {
     return (
       <div className="product-detail-page">
-        <div className="error-container">
-          <p className="error-message">{error || "Không tìm thấy sản phẩm."}</p>
-          <Link to="/" className="btn-back">
-            <Button variant="primary">Quay về trang chủ</Button>
-          </Link>
-        </div>
+        <ErrorMessage message={error || "Không tìm thấy sản phẩm."} />
       </div>
     );
-  }
-
-  function formatPrice(price) {
-    return "$" + Number(price).toFixed(2);
   }
 
   function handleAddToCart() {
     addToCart(product);
   }
+
+  const inStock = product.stock > 0;
 
   return (
     <div className="product-detail-page">
@@ -71,13 +66,13 @@ function ProductDetailPage() {
         <div className="product-info">
           <p className="product-brand">{product.brand}</p>
           <h1 className="product-title">{product.name}</h1>
-          <p className="product-price">{formatPrice(product.price)}</p>
+          <p className="product-price"><Price value={product.price} /></p>
 
           <div className="product-meta">
             <div className="meta-item">
               <strong>Trạng thái:</strong>
-              <span className={product.stock > 0 ? "in-stock" : "out-of-stock"}>
-                {product.stock > 0 ? `Còn ${product.stock} sản phẩm` : "Hết hàng"}
+              <span className="badge" style={{ background: inStock ? "#dcfce7" : "#fef2f2", color: inStock ? "#16a34a" : "#dc2626" }}>
+                {inStock ? `Còn ${product.stock} sản phẩm` : "Hết hàng"}
               </span>
             </div>
             <div className="meta-item">

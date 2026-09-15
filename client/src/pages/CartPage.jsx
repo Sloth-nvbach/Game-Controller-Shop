@@ -1,14 +1,11 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
 import Button from "../components/Button.jsx";
+import { Price } from "../components/Price.jsx";
 import "./CartPage.css";
 
 function CartPage() {
   const { items, updateQuantity, removeFromCart, getTotalPrice, clearCart } = useCart();
-
-  function formatPrice(price) {
-    return "$" + Number(price).toFixed(2);
-  }
 
   if (items.length === 0) {
     return (
@@ -44,7 +41,7 @@ function CartPage() {
                   {item.name}
                 </Link>
                 <p className="cart-item-brand">{item.brand}</p>
-                <p className="cart-item-price">{formatPrice(item.price)}</p>
+                <p className="cart-item-price"><Price value={item.price} /></p>
               </div>
               <div className="cart-item-quantity">
                 <button
@@ -63,7 +60,7 @@ function CartPage() {
                 </button>
               </div>
               <p className="cart-item-total">
-                {formatPrice(item.price * item.quantity)}
+                <Price value={item.price * item.quantity} />
               </p>
               <button
                 className="remove-btn"
@@ -80,7 +77,7 @@ function CartPage() {
           <h2>Tóm tắt đơn hàng</h2>
           <div className="summary-row">
             <span>Tạm tính ({items.length} sản phẩm)</span>
-            <span>{formatPrice(getTotalPrice())}</span>
+            <span><Price value={getTotalPrice()} /></span>
           </div>
           <div className="summary-row">
             <span>Phí vận chuyển</span>
@@ -88,7 +85,7 @@ function CartPage() {
           </div>
           <div className="summary-row total">
             <span>Tổng cộng</span>
-            <span>{formatPrice(getTotalPrice())}</span>
+            <span><Price value={getTotalPrice()} /></span>
           </div>
           <Link to="/checkout">
             <Button variant="primary" size="large" className="checkout-btn">

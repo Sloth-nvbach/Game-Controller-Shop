@@ -6,6 +6,7 @@ import Input from "../components/Input.jsx";
 import Dropdown from "../components/Dropdown.jsx";
 import Card from "../components/Card.jsx";
 import { useCart } from "../context/CartContext.jsx";
+import { Loading, ErrorMessage } from "../components/Loader.jsx";
 import "./HomePage.css";
 
 function HomePage() {
@@ -88,36 +89,40 @@ function HomePage() {
       </div>
 
       <div className="filter-section">
-        <div className="filter-bar">
+        <div className="flex gap-2 flex-wrap" style={{ alignItems: "flex-end" }}>
           <Input
             placeholder="Tìm tay cầm..."
             value={searchText}
             onChange={handleSearch}
+            style={{ flex: 1, minWidth: "180px" }}
           />
           <Dropdown
             placeholder="Tất cả các hãng"
             options={allBrands}
             value={selectedBrand}
             onChange={handleBrandChange}
+            style={{ flex: 1, minWidth: "180px" }}
           />
           <Button variant="secondary" onClick={handleClearFilters}>
             Xóa lọc
           </Button>
         </div>
-        <div className="filter-info">
+        <div className="mt-1" style={{ fontSize: "0.875rem", color: "#6b7280" }}>
           {total > 0 && <span>Tìm thấy {total} sản phẩm</span>}
         </div>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && <ErrorMessage message={error} onRetry={fetchControllers} />}
 
-      {loading && <div className="loading">Đang tải...</div>}
+      {loading && <Loading text="Đang tải sản phẩm..." />}
 
       {!loading && !error && controllers.length === 0 && (
-        <p className="no-results">Không tìm thấy tay cầm nào.</p>
+        <div className="text-center mt-2" style={{ padding: "3rem", color: "#6b7280" }}>
+          Không tìm thấy tay cầm nào.
+        </div>
       )}
 
-      <div className="card-grid">
+      <div className="grid grid-3 gap-2" style={{ marginTop: "1.5rem" }}>
         {controllers.map((c) => (
           <Card
             key={c._id}
@@ -133,7 +138,7 @@ function HomePage() {
       </div>
 
       {pages > 1 && (
-        <div className="pagination">
+        <div className="flex gap-1 mt-2" style={{ justifyContent: "center", alignItems: "center" }}>
           <Button
             variant="secondary"
             size="small"
@@ -142,7 +147,7 @@ function HomePage() {
           >
             Trước
           </Button>
-          <span className="page-info">
+          <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
             Trang {page} / {pages}
           </span>
           <Button

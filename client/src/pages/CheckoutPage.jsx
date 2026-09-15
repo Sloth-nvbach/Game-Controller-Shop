@@ -4,6 +4,8 @@ import { useCart } from "../context/CartContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import Button from "../components/Button.jsx";
 import Input from "../components/Input.jsx";
+import { Price } from "../components/Price.jsx";
+import { Loading } from "../components/Loader.jsx";
 import "./CheckoutPage.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
@@ -25,10 +27,6 @@ function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-
-  function formatPrice(price) {
-    return "$" + Number(price).toFixed(2);
-  }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -98,7 +96,7 @@ function CheckoutPage() {
   };
 
   if (authLoading) {
-    return <div className="loading">Đang kiểm tra đăng nhập...</div>;
+    return <Loading text="Đang kiểm tra đăng nhập..." />;
   }
 
   if (items.length === 0) {
@@ -232,15 +230,15 @@ function CheckoutPage() {
                   <p className="order-item-qty">x{item.quantity}</p>
                 </div>
                 <p className="order-item-price">
-                  {formatPrice(item.price * item.quantity)}
-                </p>
+                    <Price value={item.price * item.quantity} />
+                  </p>
               </div>
             ))}
           </div>
           <div className="order-summary">
             <div className="summary-row">
               <span>Tạm tính ({items.length} sản phẩm)</span>
-              <span>{formatPrice(getTotalPrice())}</span>
+              <span><Price value={getTotalPrice()} /></span>
             </div>
             <div className="summary-row">
               <span>Phí vận chuyển</span>
@@ -248,7 +246,7 @@ function CheckoutPage() {
             </div>
             <div className="summary-row total">
               <span>Tổng cộng</span>
-              <span>{formatPrice(getTotalPrice())}</span>
+              <span><Price value={getTotalPrice()} /></span>
             </div>
           </div>
         </div>
